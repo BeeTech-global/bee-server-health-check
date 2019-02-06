@@ -1,6 +1,6 @@
 {
   "name": "@beetech/bee-server-health-check",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Koa based middleware to check app health",
   "main": "src/index.js",
   "scripts": {
