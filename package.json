@@ -1,0 +1,48 @@
+{
+  "name": "@beetech/bee-server-health-check",
+  "version": "0.0.0",
+  "description": "Koa based middleware to check app health",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint src test",
+    "dev": "jest --watch",
+    "coverage": "jest --coverage"
+  },
+  "keywords": [
+    "koa",
+    "middleware",
+    "health",
+    "check"
+  ],
+  "author": "marcos.rava@beetech.global",
+  "dependencies": {
+    "http-status-codes": "^1.3.0",
+    "pre-git": "^3.17.1"
+  },
+  "devDependencies": {
+    "eslint": "^5.13.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "jest": "^24.1.0",
+    "koa": "^2.7.0",
+    "koa-route": "^3.2.0",
+    "supertest": "^3.0.0"
+  },
+  "config": {
+    "pre-git": {
+      "pre-commit": [
+        "npm run lint && npm run coverage"
+      ],
+      "post-commit": [
+        "git status"
+      ],
+      "pre-push": [
+        "npm run lint && npm run coverage"
+      ]
+    }
+  },
+  "release": {
+    "analyzeCommits": "simple-commit-message"
+  }
+}
