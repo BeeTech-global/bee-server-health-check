@@ -2,7 +2,8 @@
   "name": "healthcheck",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "dependencies": {
     "@beetech/bee-server-api": "^2.0.2",
     "axios": "^0.21.1",
@@ -36,7 +37,9 @@
   },
   "scripts": {
     "test": "jest test/unit",
-    "coverage": "jest test/unit --coverage"
+    "coverage": "jest test/unit --coverage",
+    "build": "tsc",
+    "prepare": "npm run build"
   },
   "jest": {
     "transform": {
