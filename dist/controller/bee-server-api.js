@@ -32,30 +32,8 @@ class BeeServerApiController {
     detailed(ctx) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield __1.default(this.checkAdapters);
-            const summary = result.reduce((agg, service) => {
-                const totalElapsedTime = agg.totalElapsedTime + service.elapsedTime;
-                if (service.isUp) {
-                    return Object.assign(Object.assign({}, agg), { up: agg.up + 1, totalElapsedTime });
-                }
-                if (service.isRequired) {
-                    if (service.isUp) {
-                        return Object.assign(Object.assign({}, agg), { requiredDown: agg.requiredDown + 1, totalElapsedTime });
-                    }
-                }
-                return Object.assign(Object.assign({}, agg), { optionalDown: agg.optionalDown + 1, totalElapsedTime });
-            }, {
-                up: 0,
-                totalElapsedTime: 0,
-                requiredDown: 0,
-                optionalDown: 0,
-            });
-            ctx.response.status = summary.requiredDown > 0 ? http_status_codes_1.default.SERVICE_UNAVAILABLE : http_status_codes_1.default.OK;
-            ctx.response.body = {
-                name: this.appName,
-                version: this.appVersion,
-                summary,
-                services: result,
-            };
+            ctx.response.status = result.requiredDown > 0 ? http_status_codes_1.default.SERVICE_UNAVAILABLE : http_status_codes_1.default.OK;
+            ctx.response.body = Object.assign({ name: this.appName, version: this.appVersion }, result);
         });
     }
 }

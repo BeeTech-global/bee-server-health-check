@@ -12,23 +12,49 @@ Object.defineProperty(exports, "__esModule", { value: true });
 function elapsedTime(beginning) {
     return new Date().getTime() - beginning;
 }
-function healthcheck(checks) {
+function summary(responses) {
+    const reduced = responses.reduce((agg, service) => {
+        const totalElapsedTime = agg.totalElapsedTime + service.elapsedTime;
+        if (service.isUp) {
+            return Object.assign(Object.assign({}, agg), { up: agg.up + 1, totalElapsedTime });
+        }
+        if (service.isRequired) {
+            if (service.isUp) {
+                return Object.assign(Object.assign({}, agg), { requiredDown: agg.requiredDown + 1, totalElapsedTime });
+            }
+        }
+        return Object.assign(Object.assign({}, agg), { optionalDown: agg.optionalDown + 1, totalElapsedTime });
+    }, {
+        count: 0,
+        up: 0,
+        totalElapsedTime: 0,
+        requiredDown: 0,
+        optionalDown: 0,
+    });
+    return Object.assign({ count: responses.length }, reduced);
+}
+function check(adapters) {
     return __awaiter(this, void 0, void 0, function* () {
-        return Promise.all(checks.map((check) => __awaiter(this, void 0, void 0, function* () {
+        return Promise.all(adapters.map((adapter) => __awaiter(this, void 0, void 0, function* () {
             const beginning = new Date().getTime();
             const details = {
-                name: check.name,
-                host: check.host,
-                isRequired: check.isRequired,
+                name: adapter.name,
+                host: adapter.host,
+                isRequired: adapter.isRequired,
             };
             try {
-                const result = yield check.check();
+                const result = yield adapter.check();
                 return Object.assign(Object.assign({}, details), { isUp: result.isUp, elapsedTime: elapsedTime(beginning), error: result.error || null });
             }
             catch (e) {
                 return Object.assign(Object.assign({}, details), { isUp: false, elapsedTime: elapsedTime(beginning), error: e });
             }
         })));
+    });
+}
+function healthcheck(adapters) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return summary(yield check(adapters));
     });
 }
 exports.default = healthcheck;

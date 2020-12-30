@@ -15,4 +15,12 @@ export interface Response extends Service {
     elapsedTime: number;
     error?: Error;
 }
-export default function healthcheck(checks: Adapter[]): Promise<Response[]>;
+export interface Summary {
+    count: number;
+    up: number;
+    totalElapsedTime: number;
+    requiredDown: number;
+    optionalDown: number;
+    services: Response[];
+}
+export default function healthcheck(adapters: Adapter[]): Promise<Summary>;
