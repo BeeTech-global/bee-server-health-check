@@ -70,6 +70,7 @@ function summary(responses: Response[]): Summary {
   return {
     count: responses.length,
     ...reduced,
+    services: responses,
   };
 }
 

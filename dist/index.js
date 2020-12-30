@@ -31,7 +31,7 @@ function summary(responses) {
         requiredDown: 0,
         optionalDown: 0,
     });
-    return Object.assign({ count: responses.length }, reduced);
+    return Object.assign(Object.assign({ count: responses.length }, reduced), { services: responses });
 }
 function check(adapters) {
     return __awaiter(this, void 0, void 0, function* () {
