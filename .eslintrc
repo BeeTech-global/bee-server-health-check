@@ -1,0 +1,13 @@
+{
+  "extends": ["@beetech/eslint-config-bee"],
+  "parserOptions": {
+    "project": [
+      "./tsconfig.json",
+      "./test/tsconfig.json"
+    ]
+  },
+  "rules": {
+    "no-unsafe-innerhtml/no-unsafe-innerhtml": 0,
+    "security/detect-object-injection": 0
+  }
+}
