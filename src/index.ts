@@ -19,22 +19,72 @@ export interface Response extends Service {
   error?: Error,
 }
 
+export interface Summary {
+  count: number,
+  up: number,
+  totalElapsedTime: number,
+  requiredDown: number,
+  optionalDown: number,
+  services: Response[],
+}
+
 function elapsedTime(beginning: number): number {
   return new Date().getTime() - beginning;
 }
 
-export default async function healthcheck(checks: Adapter[]): Promise<Response[]> {
-  return Promise.all(checks.map(async (check) => {
+function summary(responses: Response[]): Summary {
+  const reduced = responses.reduce((agg, service) => {
+    const totalElapsedTime = agg.totalElapsedTime + service.elapsedTime;
+
+    if (service.isUp) {
+      return {
+        ...agg,
+        up: agg.up + 1,
+        totalElapsedTime,
+      };
+    }
+
+    if (service.isRequired) {
+      if (service.isUp) {
+        return {
+          ...agg,
+          requiredDown: agg.requiredDown + 1,
+          totalElapsedTime,
+        };
+      }
+    }
+
+    return {
+      ...agg,
+      optionalDown: agg.optionalDown + 1,
+      totalElapsedTime,
+    };
+  }, {
+    count: 0,
+    up: 0,
+    totalElapsedTime: 0,
+    requiredDown: 0,
+    optionalDown: 0,
+  } as Summary);
+
+  return {
+    count: responses.length,
+    ...reduced,
+  };
+}
+
+async function check(adapters: Adapter[]): Promise<Response[]> {
+  return Promise.all(adapters.map(async (adapter) => {
     const beginning = new Date().getTime();
 
     const details = {
-      name: check.name,
-      host: check.host,
-      isRequired: check.isRequired,
+      name: adapter.name,
+      host: adapter.host,
+      isRequired: adapter.isRequired,
     };
 
     try {
-      const result = await check.check();
+      const result = await adapter.check();
 
       return {
         ...details,
@@ -51,4 +101,8 @@ export default async function healthcheck(checks: Adapter[]): Promise<Response[]
       };
     }
   }));
+}
+
+export default async function healthcheck(adapters: Adapter[]): Promise<Summary> {
+  return summary(await check(adapters));
 }

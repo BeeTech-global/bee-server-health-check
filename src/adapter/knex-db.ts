@@ -1,4 +1,4 @@
-import knex from 'knex';
+// import knex from 'knex';
 
 import { Adapter, AdapterResponse } from '../index';
 
@@ -7,7 +7,7 @@ export default class KnexDBAdapter implements Adapter {
     public readonly name: string,
     public readonly host: string,
     public readonly isRequired: boolean,
-    private readonly knexInstance: knex,
+    private readonly knexInstance: any, // knex,
   ) {
   }
 
