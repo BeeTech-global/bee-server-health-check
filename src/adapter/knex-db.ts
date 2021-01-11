@@ -1,6 +1,6 @@
 // import knex from 'knex';
 
-import { Adapter, AdapterResponse } from '../index';
+import { Adapter, AdapterResponse } from '..';
 
 export default class KnexDBAdapter implements Adapter {
   public constructor(

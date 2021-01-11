@@ -1,21 +1,18 @@
-import axios from 'axios';
+import { Redis } from 'ioredis';
 
 import { Adapter, AdapterResponse } from '..';
 
-export default class ApiAdapter implements Adapter {
+export default class RedisAdapter implements Adapter {
   public constructor(
     public readonly name: string,
     public readonly host: string,
     public readonly isRequired: boolean,
-  ) {
-  }
+    private readonly redisInstance: Redis,
+  ) {}
 
   public async check(): Promise<AdapterResponse> {
     try {
-      await axios.request({
-        url: this.host,
-        method: 'get',
-      });
+      await this.redisInstance.ping();
 
       return {
         isUp: true,
