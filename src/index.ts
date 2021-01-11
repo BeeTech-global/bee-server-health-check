@@ -45,7 +45,7 @@ function summary(responses: Response[]): Summary {
     }
 
     if (service.isRequired) {
-      if (service.isUp) {
+      if (!service.isUp) {
         return {
           ...agg,
           requiredDown: agg.requiredDown + 1,
