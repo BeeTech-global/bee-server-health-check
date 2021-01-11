@@ -25,5 +25,6 @@ bower_components
 
 dev.db
 build
+dist
 
 deploy/*.json
