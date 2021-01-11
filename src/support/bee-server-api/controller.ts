@@ -1,7 +1,7 @@
 import Server from '@beetech/bee-server-api';
 import httpStatus from 'http-status-codes';
 
-import healthcheck, { Adapter } from '..';
+import healthcheck, { Adapter } from '../..';
 
 export default class BeeServerApiController {
   public constructor(
@@ -19,13 +19,13 @@ export default class BeeServerApiController {
   }
 
   public async detailed(ctx: Server.BaseContext): Promise<void> {
-    const result = await healthcheck(this.checkAdapters);
+    const summary = await healthcheck(this.checkAdapters);
 
-    ctx.response.status = result.requiredDown > 0 ? httpStatus.SERVICE_UNAVAILABLE : httpStatus.OK;
+    ctx.response.status = summary.requiredDown > 0 ? httpStatus.SERVICE_UNAVAILABLE : httpStatus.OK;
     ctx.response.body = {
       name: this.appName,
       version: this.appVersion,
-      ...result,
+      summary,
     };
   }
 }
