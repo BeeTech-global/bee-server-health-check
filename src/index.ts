@@ -25,7 +25,7 @@ export interface Summary {
   totalElapsedTime: number,
   requiredDown: number,
   optionalDown: number,
-  services: Response[],
+  services: { [host: string]: Response },
 }
 
 function elapsedTime(beginning: number): number {
@@ -35,6 +35,7 @@ function elapsedTime(beginning: number): number {
 function summary(responses: Response[]): Summary {
   const reduced = responses.reduce((agg, service) => {
     const totalElapsedTime = agg.totalElapsedTime + service.elapsedTime;
+    agg.services[service.name] = service;
 
     if (service.isUp) {
       return {
@@ -60,17 +61,16 @@ function summary(responses: Response[]): Summary {
       totalElapsedTime,
     };
   }, {
-    count: 0,
     up: 0,
     totalElapsedTime: 0,
     requiredDown: 0,
     optionalDown: 0,
+    services: {},
   } as Summary);
 
   return {
     count: responses.length,
     ...reduced,
-    services: responses,
   };
 }
 
